@@ -20,9 +20,13 @@ import jxl.write.biff.RowsExceededException;
 public class Excel {
 	
     public List<String> read(File inputFile) throws IOException  {
+    	
+    	System.out.println("in read method");
+    	
         File inputWorkbook = inputFile;
         Workbook w;
         List<String> list = new ArrayList<>();
+        StringBuilder tempString; 
         
         
         try {
@@ -31,15 +35,38 @@ public class Excel {
             Sheet sheet = w.getSheet(0);
             // Loop over first 10 column and lines
 
-            for (int j = 0; j < sheet.getColumns(); j++) {
-                for (int i = 0; i < sheet.getRows(); i++) {
-                    Cell cell = sheet.getCell(j, i);
+            //for (int j = 0; j < sheet.getColumns(); j++) {
+            //    for (int i = 0; i < sheet.getRows(); i++) {
+            
+            int i;
+            
+            System.out.println("Columns: " + sheet.getColumns());
+            System.out.println("Rows: " + sheet.getRows());
+            System.out.println("Cell (1,10): " + (String)sheet.getCell(1, 10).getContents());
+
+            
+            for (int j = 0; j < sheet.getRows(); j++) {
+            	i=0;
+            	tempString = new StringBuilder();
+            	while(i < sheet.getColumns()) {
+            		System.out.println("Reading cell: (" + i + ", " + j +")");
+            		Cell cell = sheet.getCell(i, j);           
+                    tempString.append((String)cell.getContents());
                     
-                    if(cell.getContents()!="") {
-                    list.add((String)cell.getContents());
+                    System.out.println(tempString);
+                    //if(cell.getContents()!="") {
+                    //list.add((String)cell.getContents());
+                    i++;
+                    if (i < sheet.getColumns()) {
+                    tempString.append('&');
                     }
+                    else if (i == sheet.getColumns()) {
+                    	list.add(tempString.toString());	
+                    }
+                }
               }
-            }
+            
+        
         } catch (BiffException e) {
             e.printStackTrace();
             System.out.println("Exiting");
@@ -64,8 +91,15 @@ public class Excel {
 		workbook.createSheet("Shuffled", 0);
 		WritableSheet excelSheet = workbook.getSheet(0);
 
+		String row[];
+	
+		
 		for (int i = 0; i < list.size(); i++) {
-			addLabel(excelSheet, 0, i, list.get(i));
+			row = list.get(i).split("&");
+
+			for (int j = 0; j < row.length; j++) {
+				addLabel(excelSheet, j, i, row[j]);
+			}
 		}
 
 		workbook.write();

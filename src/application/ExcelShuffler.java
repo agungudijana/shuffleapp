@@ -24,7 +24,7 @@ import jxl.write.WriteException;
 /**
  * 
  * "ExcelShuffer"
- *	version 1.1
+ *	version 1.3
  * 
  * @author agung udijana
  * 
@@ -38,7 +38,8 @@ import jxl.write.WriteException;
  * This standalone Windows tool randomly shuffles the contents of a simple Excel spreadsheet
  * consisting of one worksheet and enables the user to save the shuffled list 
  * to new Excel sheet.
- *  
+ * 
+ * -= NEW 4 April 2018 :  Now also possible to have multiple columns with data per row =-
  * 
  */
 
@@ -131,6 +132,7 @@ public final class ExcelShuffler extends Application {
 		System.out.println();
 		
 		Excel excel = new Excel();
+		System.out.println("Calling read method");
 		List<String> list = excel.read(file);
 
 		System.out.println("Unshuffled list:");
